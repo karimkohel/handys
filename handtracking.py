@@ -6,28 +6,26 @@ class HandDetector():
     def __init__(self):
         self.hands = mp.solutions.hands.Hands()
 
-    def getPoint(self, handPoint, image):
+    def getPoint(self, requestedHandPoints, image):
         h, w, _ = image.shape
 
         image.flags.writeable = False
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self.hands.process(image)
 
-        if not results.multi_hand_landmarks:
-            return None
-
-        elif len(results.multi_hand_landmarks) == 1:
-            hand_landmarks = results.multi_hand_landmarks[0]
-            pointxy = hand_landmarks.landmark[handPoint]
-            cx, cy = int(pointxy.x*w), int(pointxy.y*h)
-            return (cx, cy)
-        else:
-            multiHandsPoints = []
+        if results.multi_hand_landmarks:
+            allHandsPoints = []
             for hand_landmarks in results.multi_hand_landmarks:
-                pointxy = hand_landmarks.landmark[handPoint]
-                cx, cy = int(pointxy.x*w), int(pointxy.y*h)
-                multiHandsPoints.append((cx, cy))
-            return multiHandsPoints
+                pointsInHand = []
+                for point in requestedHandPoints:
+                    pointxy = hand_landmarks.landmark[point]
+                    cx, cy = int(pointxy.x*w), int(pointxy.y*h)
+                    pointsInHand.append((cx, cy))
+                allHandsPoints.append(pointsInHand)
+            return allHandsPoints
+
+        else:
+            return None
         
 
 
@@ -43,7 +41,7 @@ def main():
             print("Ignoring empty camera frame.")
             continue
 
-        points = hd.getPoint(8, image)
+        points = hd.getPoint((4,8), image)
         print(points)
 
             # Flip the image horizontally for a selfie-view display.
