@@ -42,7 +42,6 @@ def main():
             continue
 
         points = hd.getPoint((4,8), image)
-        print(points)
 
             # Flip the image horizontally for a selfie-view display.
         cv2.imshow('MediaPipe Hands', image)
