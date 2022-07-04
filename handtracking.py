@@ -1,24 +1,21 @@
 import cv2
 import mediapipe as mp
-
-handsMp = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-hands = handsMp.Hands()
+from mediapipe.mp.solutions.hands import Hands
 
 
-def getPoint(point, image):
-    h, w, c = image.shape
+class HandDetector():
+    def __init__(self):
+        self.hands = Hands()
 
-    image.flags.writeable = False
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    results = hands.process(image)
+    def getPoint(self, handPoint, image):
+        h, w, _ = image.shape
 
-    image.flags.writeable = True
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    if results.multi_hand_landmarks:
+        image.flags.writeable = False
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        results = self.hands.process(image)
+
         for hand_landmarks in results.multi_hand_landmarks:
-            pointxy = hand_landmarks.landmark[point]
+            pointxy = hand_landmarks.landmark[handPoint]
             cx, cy = int(pointxy.x*w), int(pointxy.y*h)
             print(cx, cy)
 
