@@ -15,6 +15,9 @@ while True:
         indexFingerPoint = handsPoints[0][0]
         thumbFingerPoint = handsPoints[0][1]
         distanceBetweenFingers = abs(indexFingerPoint[0]-thumbFingerPoint[0]) + abs(indexFingerPoint[1]-thumbFingerPoint[1])
+        if distanceBetweenFingers < 100:
+            print("Thank you, GoodBye.")
+            break
 
 
     if cv2.waitKey(1) == ord('q'):
